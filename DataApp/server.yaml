@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-app
+spec:
+  selector:
+    matchLabels:
+      app: data-app
+  template:
+    metadata:
+      labels:
+        app: data-app
+    spec:
+      containers:
+        - name: data
+          image: test/dataapp
+          imagePullPolicy: Never
+          volumeMounts:
+            - name: common-volume
+              mountPath: /result/Resources
+          env:
+            - name: ASPNETCORE_URLS
+              value: "http://+:5000"
+        - name: datahelper
+          image: test/datahelperapp
+          imagePullPolicy: Never
+          env:
+            - name: ASPNETCORE_URLS
+              value: "http://+:5001"
+      volumes:
+        - name: common-volume
+          hostPath: 
+            path: /common
